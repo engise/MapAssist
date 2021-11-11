@@ -41,7 +41,7 @@ namespace MapAssist.Helpers
             GameObject.HellForge,
             GameObject.NihlathakWildernessStartPosition
         };
-        
+
         private static readonly HashSet<GameObject> GoodChests = new HashSet<GameObject>
         {
             GameObject.GoodChest,
