@@ -35,8 +35,8 @@ namespace MapAssist.Helpers
         private readonly IReadOnlyList<PointOfInterest> _pointsOfInterest;
         private readonly Dictionary<(string, int), Font> _fontCache = new Dictionary<(string, int), Font>();
 
-        private readonly Dictionary<(Shape, int, Color, double), Bitmap> _iconCache =
-            new Dictionary<(Shape, int, Color, double), Bitmap>();
+        private readonly Dictionary<(Shape, int, Color, float), Bitmap> _iconCache =
+            new Dictionary<(Shape, int, Color, float), Bitmap>();
 
         public Compositor(AreaData areaData, IReadOnlyList<PointOfInterest> pointOfInterest)
         {
@@ -55,26 +55,24 @@ namespace MapAssist.Helpers
 
             var image = (Bitmap)_background.Clone();
 
-            using (var imageGraphics = Graphics.FromImage(image))
+            using (Graphics imageGraphics = Graphics.FromImage(image))
             {
                 imageGraphics.CompositingQuality = CompositingQuality.HighQuality;
                 imageGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 imageGraphics.SmoothingMode = SmoothingMode.HighQuality;
                 imageGraphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-                PointOfInterestRendering renderPlayer = Settings.Rendering.Player;
-
                 Point localPlayerPosition = gameData.PlayerPosition
                     .OffsetFrom(_areaData.Origin)
                     .OffsetFrom(CropOffset)
-                    .OffsetFrom(GetIconOffset(renderPlayer.IconSize));
+                    .OffsetFrom(GetIconOffset(Settings.Rendering.Player.IconSize));
 
                 var playerIconRadius = GetIconRadius(Settings.Rendering.Player.IconSize);
 
                 if (Settings.Rendering.Player.CanDrawIcon())
                 {
-                    
-                    Bitmap playerIcon = GetIcon(renderPlayer.IconShape, renderPlayer.IconSize, renderPlayer.IconColor, renderPlayer.IconLineThickness);
+
+                    Bitmap playerIcon = GetIcon(Settings.Rendering.Player);
                     imageGraphics.DrawImage(playerIcon, localPlayerPosition);
                 }
 
@@ -84,14 +82,17 @@ namespace MapAssist.Helpers
                 {
                     if (poi.RenderingSettings.CanDrawLine())
                     {
-                        var pen = new Pen(poi.RenderingSettings.LineColor, (float) poi.RenderingSettings.LineThickness);
+                        var pen = new Pen(poi.RenderingSettings.LineColor, poi.RenderingSettings.LineThickness);
                         if (poi.RenderingSettings.CanDrawArrowHead())
                         {
                             pen.CustomEndCap = new AdjustableArrowCap(poi.RenderingSettings.ArrowHeadSize,
                                 poi.RenderingSettings.ArrowHeadSize);
                         }
 
-                        var localPlayerCenterPosition = new Point(localPlayerPosition.X + playerIconRadius, localPlayerPosition.Y + playerIconRadius);
+                        var localPlayerCenterPosition = new Point(
+                            localPlayerPosition.X + playerIconRadius,
+                            localPlayerPosition.Y + playerIconRadius
+                        );
                         var poiPosition = poi.Position.OffsetFrom(_areaData.Origin).OffsetFrom(CropOffset);
 
                         imageGraphics.DrawLine(pen, localPlayerCenterPosition, poiPosition);
@@ -160,11 +161,10 @@ namespace MapAssist.Helpers
                 {
                     if (poi.RenderingSettings.CanDrawIcon())
                     {
-                        PointOfInterestRendering render = poi.RenderingSettings;
-                        Bitmap icon = GetIcon(render.IconShape, render.IconSize, render.IconColor, render.IconLineThickness);
+                        Bitmap icon = GetIcon(poi.RenderingSettings);
                         Point origin = poi.Position
                             .OffsetFrom(areaData.Origin)
-                            .OffsetFrom(GetIconOffset(render.IconSize));
+                            .OffsetFrom(GetIconOffset(poi.RenderingSettings.IconSize));
                         backgroundGraphics.DrawImage(icon, origin);
                     }
 
@@ -181,18 +181,6 @@ namespace MapAssist.Helpers
             }
         }
 
-        public Font GetFont(string fontStr, int fontSize)
-        {
-            (string LabelFont, int LabelFontSize) cacheKey = (fontStr, fontSize);
-            if (!_fontCache.ContainsKey(cacheKey))
-            {
-                var font = new Font(fontStr,
-                    fontSize);
-                _fontCache[cacheKey] = font;
-            }
-
-            return _fontCache[cacheKey];
-        }
         private Font GetFont(PointOfInterestRendering poiSettings)
         {
             (string LabelFont, int LabelFontSize) cacheKey = (poiSettings.LabelFont, poiSettings.LabelFontSize);
@@ -206,23 +194,30 @@ namespace MapAssist.Helpers
             return _fontCache[cacheKey];
         }
 
-        private Bitmap GetIcon(Shape iconShape, int iconSize, Color iconColor, double iconLineTickness)
+        private Bitmap GetIcon(PointOfInterestRendering poiSettings)
         {
-            (Shape IconShape, int IconSize, Color Color, double IconLineThickness) cacheKey = (iconShape, iconSize, iconColor, iconLineTickness);
+            (Shape IconShape, int IconSize, Color Color, float IconLineThickness) cacheKey = (
+                poiSettings.IconShape,
+                poiSettings.IconSize,
+                poiSettings.IconColor,
+                poiSettings.LineThickness
+            );
             if (!_iconCache.ContainsKey(cacheKey))
             {
-                var bitmap = new Bitmap(iconSize, iconSize, PixelFormat.Format32bppArgb);
-                var pen = new Pen(iconColor, (float) iconLineTickness);
+                var bitmap = new Bitmap(poiSettings.IconSize, poiSettings.IconSize, PixelFormat.Format32bppArgb);
+                var pen = new Pen(poiSettings.IconColor, poiSettings.LineThickness);
                 using (var g = Graphics.FromImage(bitmap))
                 {
                     g.SmoothingMode = SmoothingMode.HighQuality;
-                    switch (iconShape)
+                    switch (poiSettings.IconShape)
                     {
                         case Shape.Ellipse:
-                            g.FillEllipse(new SolidBrush(iconColor), 0, 0, iconSize, iconSize);
+                            g.FillEllipse(new SolidBrush(poiSettings.IconColor), 0, 0, poiSettings.IconSize,
+                                poiSettings.IconSize);
                             break;
                         case Shape.Rectangle:
-                            g.FillRectangle(new SolidBrush(iconColor), 0, 0, iconSize, iconSize);
+                            g.FillRectangle(new SolidBrush(poiSettings.IconColor), 0, 0, poiSettings.IconSize,
+                                poiSettings.IconSize);
                             break;
                         case Shape.Cross:
                             Point[] crossLinePoints = {

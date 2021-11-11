@@ -26,10 +26,10 @@ namespace MapAssist.Settings
         public Color IconColor;
         public Shape IconShape;
         public int IconSize;
-        public double IconLineThickness;
+        public float IconLineThickness;
 
         public Color LineColor;
-        public double LineThickness;
+        public float LineThickness;
 
         public int ArrowHeadSize;
 
