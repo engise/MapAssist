@@ -44,13 +44,13 @@ namespace MapAssist.Settings
 
         private static T GetConfigValue<T>(string key, Func<string, T> converter, T fallback = default)
         {
-            var valueString = ConfigurationManager.AppSettings[key];
+            string valueString = ConfigurationManager.AppSettings[key];
             return string.IsNullOrWhiteSpace(valueString) ? fallback : converter.Invoke(valueString);
         }
 
         private static T GetFormattedConfigValue<T>(string key, Func<string, IFormatProvider, T> converter, IFormatProvider format, T fallback = default)
         {
-            var valueString = ConfigurationManager.AppSettings[key];
+            string valueString = ConfigurationManager.AppSettings[key];
             return string.IsNullOrWhiteSpace(valueString) ? fallback : converter.Invoke(valueString, format);
         }
 

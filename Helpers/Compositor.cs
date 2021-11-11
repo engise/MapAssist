@@ -71,7 +71,6 @@ namespace MapAssist.Helpers
 
                 if (Settings.Rendering.Player.CanDrawIcon())
                 {
-
                     Bitmap playerIcon = GetIcon(Settings.Rendering.Player);
                     imageGraphics.DrawImage(playerIcon, localPlayerPosition);
                 }
