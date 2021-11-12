@@ -48,7 +48,7 @@ namespace MapAssist.Settings
             return string.IsNullOrWhiteSpace(valueString) ? fallback : converter.Invoke(valueString);
         }
 
-        private static T GetFormattedConfigValue<T>(string key, Func<string, IFormatProvider, T> converter, IFormatProvider format, T fallback = default)
+        private static T GetConfigValue<T>(string key, Func<string, IFormatProvider, T> converter, IFormatProvider format, T fallback = default)
         {
             string valueString = ConfigurationManager.AppSettings[key];
             return string.IsNullOrWhiteSpace(valueString) ? fallback : converter.Invoke(valueString, format);
@@ -85,9 +85,9 @@ namespace MapAssist.Settings
                 IconColor = GetConfigValue($"{name}.IconColor", ParseColor, Color.Transparent),
                 IconShape = GetConfigValue($"{name}.IconShape", t => (Shape)Enum.Parse(typeof(Shape), t, true)),
                 IconSize = GetConfigValue($"{name}.IconSize", Convert.ToInt32),
-                IconLineThickness = GetFormattedConfigValue($"{name}.IconLineThickness", Convert.ToSingle, CultureInfo.InvariantCulture, 1.0f),
+                IconLineThickness = GetConfigValue($"{name}.IconLineThickness", Convert.ToSingle, CultureInfo.InvariantCulture, 1.0f),
                 LineColor = GetConfigValue($"{name}.LineColor", ParseColor, Color.Transparent),
-                LineThickness = GetFormattedConfigValue($"{name}.LineThickness", Convert.ToSingle, CultureInfo.InvariantCulture, 1.0f),
+                LineThickness = GetConfigValue($"{name}.LineThickness", Convert.ToSingle, CultureInfo.InvariantCulture, 1.0f),
                 ArrowHeadSize = GetConfigValue($"{name}.ArrowHeadSize", Convert.ToInt32),
                 LabelColor = GetConfigValue($"{name}.LabelColor", ParseColor, Color.Transparent),
                 LabelFont = GetConfigValue($"{name}.LabelFont", t => t, "Arial"),
