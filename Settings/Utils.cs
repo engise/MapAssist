@@ -44,7 +44,7 @@ namespace MapAssist.Settings
 
         private static T GetConfigValue<T>(string key, Func<string, T> converter, T fallback = default)
         {
-            string valueString = ConfigurationManager.AppSettings[key];
+            var valueString = ConfigurationManager.AppSettings[key];
             return string.IsNullOrWhiteSpace(valueString) ? fallback : converter.Invoke(valueString);
         }
 
@@ -66,7 +66,7 @@ namespace MapAssist.Settings
                 return Color.FromName(value);
             }
 
-            int[] ints = value.Split(',').Select(o => int.Parse(o.Trim())).ToArray();
+            var ints = value.Split(',').Select(o => int.Parse(o.Trim())).ToArray();
             switch (ints.Length)
             {
                 case 4:

@@ -55,7 +55,7 @@ namespace MapAssist.Helpers
 
             var image = (Bitmap)_background.Clone();
 
-            using (Graphics imageGraphics = Graphics.FromImage(image))
+            using (var imageGraphics = Graphics.FromImage(image))
             {
                 imageGraphics.CompositingQuality = CompositingQuality.HighQuality;
                 imageGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -133,7 +133,7 @@ namespace MapAssist.Helpers
         {
             var background = new Bitmap(areaData.CollisionGrid[0].Length, areaData.CollisionGrid.Length,
                 PixelFormat.Format32bppArgb);
-            using (Graphics backgroundGraphics = Graphics.FromImage(background))
+            using (var backgroundGraphics = Graphics.FromImage(background))
             {
                 backgroundGraphics.FillRectangle(new SolidBrush(Color.Transparent), 0, 0,
                     areaData.CollisionGrid[0].Length,
@@ -147,7 +147,7 @@ namespace MapAssist.Helpers
                 {
                     for (var x = 0; x < areaData.CollisionGrid[y].Length; x++)
                     {
-                        int type = areaData.CollisionGrid[y][x];
+                        var type = areaData.CollisionGrid[y][x];
                         Color? typeColor = Settings.Map.MapColors[type];
                         if (typeColor != null)
                         {
