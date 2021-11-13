@@ -161,7 +161,7 @@ namespace MapAssist.Helpers
 
         public static List<PointOfInterest> Get(MapApi mapApi, AreaData areaData)
         {
-            List<PointOfInterest> pointOfInterest = new List<PointOfInterest>();
+            var pointOfInterest = new List<PointOfInterest>();
 
             switch (areaData.Area)
             {
