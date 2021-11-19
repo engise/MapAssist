@@ -65,99 +65,22 @@ namespace MapAssist.Helpers
             GameObject.SteleDesertMagicShrine,
         };
 
-        private static readonly HashSet<GameObject> Chests = new HashSet<GameObject>
+        private static readonly HashSet<GameObject> NormalChests = new HashSet<GameObject>
         {
-            GameObject.LargeChestRight,
-            GameObject.LargeChestLeft,
-            GameObject.TombLargeChestL,
-            GameObject.TombLargeChestR,
-            GameObject.Act1LargeChestRight,
-            GameObject.Act1TallChestRight,
-            GameObject.Act1MediumChestRight,
-            GameObject.Act1LargeChest1,
-            GameObject.Act2MediumChestRight,
-            GameObject.Act2LargeChestRight,
-            GameObject.Act2LargeChestLeft,
-            GameObject.MediumChestLeft,
-            GameObject.LargeChestLeft2,
-            GameObject.JungleChest,
-            GameObject.JungleMediumChestLeft,
-            GameObject.TallChestLeft,
-            GameObject.Gchest1L,
-            GameObject.Gchest2R,
-            GameObject.Gchest3R,
-            GameObject.GLchest3L,
-            GameObject.MafistoLargeChestLeft,
-            GameObject.MafistoLargeChestRight,
-            GameObject.MafistoMediumChestLeft,
-            GameObject.MafistoMediumChestRight,
-            GameObject.SpiderLairLargeChestLeft,
-            GameObject.SpiderLairTallChestLeft,
-            GameObject.SpiderLairMediumChestRight,
-            GameObject.SpiderLairTallChestRight,
-            GameObject.HoradricCubeChest,
-            GameObject.HoradricScrollChest,
-            GameObject.StaffOfKingsChest,
-            GameObject.LargeChestR,
-            GameObject.InnerHellBoneChest,
-            GameObject.KhalimChest1,
-            GameObject.KhalimChest2,
-            GameObject.KhalimChest3,
-            GameObject.ExpansionChestRight,
-            GameObject.ExpansionWoodChestLeft,
-            GameObject.BurialChestLeft,
-            GameObject.BurialChestRight,
-            GameObject.ExpansionChestLeft,
-            GameObject.ExpansionWoodChestRight,
-            GameObject.ExpansionSmallChestLeft,
-            GameObject.ExpansionSmallChestRight,
-            GameObject.ExpansionExplodingChest,
-            GameObject.ExpansionSpecialChest,
-            GameObject.ExpansionSnowyWoodChestLeft,
-            GameObject.ExpansionSnowyWoodChestRight,
-            GameObject.ExpansionSnowyWoodChest2Left,
-            GameObject.ExpansionSnowyWoodChest2Right,
             GameObject.NotSoGoodChest,
-        };
-
-        private static readonly HashSet<GameObject> CommonContainers = new HashSet<GameObject>
-        {
-            GameObject.ExpansionHiddenStash,
             GameObject.JungleStashObject1,
             GameObject.JungleStashObject2,
             GameObject.JungleStashObject3,
             GameObject.JungleStashObject4,
-            GameObject.IceCaveHiddenStash,
-            GameObject.InnerHellHiddenStash,
-            GameObject.InnerHellHiddenStash2,
-            GameObject.InnerHellHiddenStash3,
-            GameObject.StashBox,
-            GameObject.StashAltar,
-            GameObject.TombCoffin,
-            GameObject.Casket5,
-            GameObject.Casket6,
-            GameObject.CasketR,
-            GameObject.CasketL,
-            GameObject.Casket,
-            GameObject.Casket3,
-            GameObject.Act3DungeonCasket,
-            GameObject.ArcaneCasket,
+            GameObject.LargeChestLeft,
+        };
+
+        private static readonly HashSet<GameObject> CommonContainers = new HashSet<GameObject>
+        {
             GameObject.HollowLog,
-            GameObject.Act3BigLog,
-            GameObject.Act3BigLogC,
-            GameObject.Act3BigLogD,
-            GameObject.SkeletonCorpseIsStillAnOxymoron,
-            GameObject.LooseRock,
-            GameObject.LooseBoulder,
-            GameObject.MaggotLairGooPile,
-            GameObject.LargeUrn1,
-            GameObject.Urn2,
-            GameObject.Urn3,
-            GameObject.LargeUrn4,
-            GameObject.LargeUrn5,
-            GameObject.DesertJug1,
-            GameObject.DesertJug2,
-            GameObject.Barrel,
+            GameObject.DeadVillager1,
+            GameObject.DeadVillager2,
+            GameObject.SkeletonCorpseIsAnOxymoron,
         };
 
         private static readonly HashSet<GameObject> ArmorWeapRacks = new HashSet<GameObject>
@@ -170,6 +93,18 @@ namespace MapAssist.Helpers
             GameObject.ExpansionWeaponRackLeft,
             GameObject.WeaponRackRight,
             GameObject.WeaponRackLeft,
+        };
+
+        private static readonly HashSet<GameObject> SkipObjects = new HashSet<GameObject>
+        {
+            GameObject.JungleTorch,
+            GameObject.SmallFire,
+            GameObject.Basket1,
+            GameObject.Basket2,
+            GameObject.Act3TownTorch,
+            GameObject.Torch1Tiki,
+            GameObject.FloorBrazier,
+            GameObject.Act3KurastTorch,
         };
 
         public static List<PointOfInterest> Get(MapApi mapApi, AreaData areaData)
@@ -294,7 +229,7 @@ namespace MapAssist.Helpers
                     }
                 }
                 // Normal Chest
-                else if (Chests.Contains(obj))
+                else if (NormalChests.Contains(obj))
                 {
                     foreach (Point point in points)
                     {
@@ -342,6 +277,19 @@ namespace MapAssist.Helpers
                             Label = obj.ToString(),
                             Position = point,
                             RenderingSettings = Settings.Rendering.Shrine
+                        });
+                    }
+                }
+                // DEBUG
+                else if (!SkipObjects.Contains(obj))
+                {
+                    foreach (Point point in points)
+                    {
+                        pointOfInterest.Add(new PointOfInterest
+                        {
+                            Label = ((int)obj).ToString(),
+                            Position = point,
+                            RenderingSettings = Settings.Rendering.Debug
                         });
                     }
                 }
