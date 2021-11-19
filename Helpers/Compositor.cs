@@ -218,7 +218,7 @@ namespace MapAssist.Helpers
 
         private Bitmap GetIcon(PointOfInterestRendering poiSettings)
         {
-            (Shape IconShape, int IconSize, Color Color, float IconLineThickness) cacheKey = (
+            (Shape IconShape, int IconSize, Color Color, float LineThickness) cacheKey = (
                 poiSettings.IconShape,
                 poiSettings.IconSize,
                 poiSettings.IconColor,
