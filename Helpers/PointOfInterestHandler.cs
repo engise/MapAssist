@@ -52,6 +52,19 @@ namespace MapAssist.Helpers
             GameObject.ArcaneSmallChestRight
         };
 
+        private static readonly HashSet<GameObject> Shrines = new HashSet<GameObject>
+        {
+            GameObject.Shrine,
+            GameObject.HornShrine,
+            GameObject.ForestAltar,
+            GameObject.DesertShrine1,
+            GameObject.DesertShrine2,
+            GameObject.DesertShrine3,
+            GameObject.DesertShrine4,
+            GameObject.DesertShrine5,
+            GameObject.SteleDesertMagicShrine,
+        };
+
         private static readonly HashSet<GameObject> Chests = new HashSet<GameObject>
         {
             GameObject.LargeChestRight,
@@ -316,6 +329,19 @@ namespace MapAssist.Helpers
                             Label = obj.ToString(),
                             Position = point,
                             RenderingSettings = Settings.Rendering.ArmorWeapRack
+                        });
+                    }
+                }
+                // Shrines
+                else if (Shrines.Contains(obj))
+                {
+                    foreach (Point point in points)
+                    {
+                        pointOfInterest.Add(new PointOfInterest
+                        {
+                            Label = obj.ToString(),
+                            Position = point,
+                            RenderingSettings = Settings.Rendering.Shrine
                         });
                     }
                 }

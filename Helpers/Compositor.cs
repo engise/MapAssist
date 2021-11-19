@@ -66,7 +66,7 @@ namespace MapAssist.Helpers
                     .OffsetFrom(_areaData.Origin)
                     .OffsetFrom(CropOffset)
                     .OffsetFrom(new Point(Settings.Rendering.Player.IconSize, Settings.Rendering.Player.IconSize));
-                
+
                 if (Rendering.Player.CanDrawIcon())
                 {
                     Bitmap playerIcon = GetIcon(Settings.Rendering.Player);
@@ -88,6 +88,29 @@ namespace MapAssist.Helpers
 
                         imageGraphics.DrawLine(pen, localPlayerPosition,
                             poi.Position.OffsetFrom(_areaData.Origin).OffsetFrom(CropOffset));
+                    }
+                }
+                MonsterRendering renderMonster = Utils.GetMonsterRendering();
+                foreach (var unitAny in gameData.Monsters)
+                {
+                    var clr = unitAny.IsElite() ? renderMonster.EliteColor : renderMonster.NormalColor;
+                    var pen = new Pen(clr, 1);
+                    var sz = new Size(5, 5);
+                    var sz2 = new Size(2, 2);
+                    var pos = new Point(unitAny.Path.DynamicX, unitAny.Path.DynamicY);
+                    var midPoint = pos.OffsetFrom(_areaData.Origin).OffsetFrom(CropOffset);
+                    var rect = new Rectangle(midPoint, sz);
+                    imageGraphics.DrawRectangle(pen, rect);
+                    var i = 0;
+                    foreach (var immunity in unitAny.Immunities)
+                    {
+                        var brush = new SolidBrush(ResistColors.ResistColor[immunity]);
+                        //shove the point we're drawing the immunity at to the left to align based on number of immunities
+                        var iPoint = new Point((i * -2) + (1 * (unitAny.Immunities.Count - 1)) - 1, 3);
+                        var pen2 = new Pen(ResistColors.ResistColor[immunity], 1);
+                        var rect2 = new Rectangle(midPoint.OffsetFrom(iPoint), sz2);
+                        imageGraphics.FillRectangle(brush, rect2);
+                        i++;
                     }
                 }
             }
@@ -201,6 +224,21 @@ namespace MapAssist.Helpers
                         case Shape.Rectangle:
                             g.FillRectangle(new SolidBrush(poiSettings.IconColor), 0, 0, poiSettings.IconSize,
                                 poiSettings.IconSize);
+                            break;
+                        case Shape.Polygon:
+                            var halfSize = poiSettings.IconSize / 2;
+                            var cutSize = poiSettings.IconSize / 10;
+                            PointF[] curvePoints = {
+                                new PointF(0, halfSize),
+                                new PointF(halfSize - cutSize, halfSize - cutSize),
+                                new PointF(halfSize, 0),
+                                new PointF(halfSize + cutSize, halfSize - cutSize),
+                                new PointF(poiSettings.IconSize, halfSize),
+                                new PointF(halfSize + cutSize, halfSize + cutSize),
+                                new PointF(halfSize, poiSettings.IconSize),
+                                new PointF(halfSize - cutSize, halfSize + cutSize)
+                            };
+                            g.FillPolygon(new SolidBrush(poiSettings.IconColor), curvePoints);
                             break;
                     }
                 }

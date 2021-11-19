@@ -43,6 +43,8 @@ namespace MapAssist.Settings
         public static PointOfInterestRendering NormalChest = Utils.GetRenderingSettingsForPrefix("Chest");
         public static PointOfInterestRendering CommonContainer = Utils.GetRenderingSettingsForPrefix("CommonContainer");
         public static PointOfInterestRendering ArmorWeapRack = Utils.GetRenderingSettingsForPrefix("ArmorWeapRack");
+
+        public static PointOfInterestRendering Shrine = Utils.GetRenderingSettingsForPrefix("Shrine");
     }
 
     public static class Map
