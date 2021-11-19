@@ -73,6 +73,16 @@ namespace MapAssist.Helpers
             GameObject.JungleStashObject3,
             GameObject.JungleStashObject4,
             GameObject.LargeChestLeft,
+            GameObject.JungleMediumChestLeft,
+            GameObject.MediumChestLeft,
+            GameObject.MafistoLargeChestLeft,
+            GameObject.MafistoLargeChestRight,
+            GameObject.MafistoMediumChestLeft,
+            GameObject.MafistoMediumChestRight,
+            GameObject.SpiderLairLargeChestLeft,
+            GameObject.SpiderLairTallChestLeft,
+            GameObject.SpiderLairMediumChestRight,
+            GameObject.SpiderLairTallChestRight,
         };
 
         private static readonly HashSet<GameObject> CommonContainers = new HashSet<GameObject>
@@ -81,6 +91,9 @@ namespace MapAssist.Helpers
             GameObject.DeadVillager1,
             GameObject.DeadVillager2,
             GameObject.SkeletonCorpseIsAnOxymoron,
+            GameObject.StashAltar,
+            GameObject.StashBox,
+            GameObject.MephistoLair,
         };
 
         private static readonly HashSet<GameObject> ArmorWeapRacks = new HashSet<GameObject>
@@ -105,6 +118,7 @@ namespace MapAssist.Helpers
             GameObject.Torch1Tiki,
             GameObject.FloorBrazier,
             GameObject.Act3KurastTorch,
+            GameObject.Act2BrazierCeller,
         };
 
         public static List<PointOfInterest> Get(MapApi mapApi, AreaData areaData)
