@@ -42,7 +42,7 @@ namespace MapAssist.Helpers
             GameObject.NihlathakWildernessStartPosition
         };
         
-        private static readonly HashSet<GameObject> GoodChests = new HashSet<GameObject>
+        private static readonly HashSet<GameObject> SuperChests = new HashSet<GameObject>
         {
             GameObject.GoodChest,
             GameObject.SparklyChest,
@@ -63,6 +63,62 @@ namespace MapAssist.Helpers
             GameObject.DesertShrine4,
             GameObject.DesertShrine5,
             GameObject.SteleDesertMagicShrine,
+        };
+
+        private static readonly HashSet<GameObject> NormalChests = new HashSet<GameObject>
+        {
+            GameObject.NotSoGoodChest,
+            GameObject.JungleStashObject1,
+            GameObject.JungleStashObject2,
+            GameObject.JungleStashObject3,
+            GameObject.JungleStashObject4,
+            GameObject.LargeChestLeft,
+            GameObject.JungleMediumChestLeft,
+            GameObject.MediumChestLeft,
+            GameObject.MafistoLargeChestLeft,
+            GameObject.MafistoLargeChestRight,
+            GameObject.MafistoMediumChestLeft,
+            GameObject.MafistoMediumChestRight,
+            GameObject.SpiderLairLargeChestLeft,
+            GameObject.SpiderLairTallChestLeft,
+            GameObject.SpiderLairMediumChestRight,
+            GameObject.SpiderLairTallChestRight,
+        };
+
+        private static readonly HashSet<GameObject> CommonContainers = new HashSet<GameObject>
+        {
+            GameObject.HollowLog,
+            GameObject.DeadVillager1,
+            GameObject.DeadVillager2,
+            GameObject.SkeletonCorpseIsAnOxymoron,
+            GameObject.StashAltar,
+            GameObject.StashBox,
+            GameObject.MephistoLair,
+        };
+
+        private static readonly HashSet<GameObject> ArmorWeapRacks = new HashSet<GameObject>
+        {
+            GameObject.ExpansionArmorStandRight,
+            GameObject.ExpansionArmorStandLeft,
+            GameObject.ArmorStandRight,
+            GameObject.ArmorStandLeft,
+            GameObject.ExpansionWeaponRackRight,
+            GameObject.ExpansionWeaponRackLeft,
+            GameObject.WeaponRackRight,
+            GameObject.WeaponRackLeft,
+        };
+
+        private static readonly HashSet<GameObject> SkipObjects = new HashSet<GameObject>
+        {
+            GameObject.JungleTorch,
+            GameObject.SmallFire,
+            GameObject.Basket1,
+            GameObject.Basket2,
+            GameObject.Act3TownTorch,
+            GameObject.Torch1Tiki,
+            GameObject.FloorBrazier,
+            GameObject.Act3KurastTorch,
+            GameObject.Act2BrazierCeller,
         };
 
         public static List<PointOfInterest> Get(MapApi mapApi, AreaData areaData)
@@ -173,8 +229,8 @@ namespace MapAssist.Helpers
                         RenderingSettings = Settings.Rendering.Quest
                     });
                 }
-                // Chests
-                else if (GoodChests.Contains(obj))
+                // Super Chest
+                else if (SuperChests.Contains(obj))
                 {
                     foreach (Point point in points)
                     {
@@ -183,6 +239,45 @@ namespace MapAssist.Helpers
                             Label = obj.ToString(),
                             Position = point,
                             RenderingSettings = Settings.Rendering.SuperChest
+                        });
+                    }
+                }
+                // Normal Chest
+                else if (NormalChests.Contains(obj))
+                {
+                    foreach (Point point in points)
+                    {
+                        pointOfInterest.Add(new PointOfInterest
+                        {
+                            Label = obj.ToString(),
+                            Position = point,
+                            RenderingSettings = Settings.Rendering.NormalChest
+                        });
+                    }
+                }
+                // Common Containers (Barrels, Jugs, Logs, etc)
+                else if (CommonContainers.Contains(obj))
+                {
+                    foreach (Point point in points)
+                    {
+                        pointOfInterest.Add(new PointOfInterest
+                        {
+                            Label = obj.ToString(),
+                            Position = point,
+                            RenderingSettings = Settings.Rendering.CommonContainer
+                        });
+                    }
+                }
+                // Armor Stands & Weapon Racks
+                else if (ArmorWeapRacks.Contains(obj))
+                {
+                    foreach (Point point in points)
+                    {
+                        pointOfInterest.Add(new PointOfInterest
+                        {
+                            Label = obj.ToString(),
+                            Position = point,
+                            RenderingSettings = Settings.Rendering.ArmorWeapRack
                         });
                     }
                 }
@@ -196,6 +291,19 @@ namespace MapAssist.Helpers
                             Label = obj.ToString(),
                             Position = point,
                             RenderingSettings = Settings.Rendering.Shrine
+                        });
+                    }
+                }
+                // DEBUG
+                else if (!SkipObjects.Contains(obj))
+                {
+                    foreach (Point point in points)
+                    {
+                        pointOfInterest.Add(new PointOfInterest
+                        {
+                            Label = ((int)obj).ToString(),
+                            Position = point,
+                            RenderingSettings = Settings.Rendering.Debug
                         });
                     }
                 }
