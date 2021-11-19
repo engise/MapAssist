@@ -58,4 +58,9 @@ namespace MapAssist.Settings
                    LabelFontSize > 0;
         }
     }
+    public class MonsterRendering
+    {
+        public Color NormalColor;
+        public Color EliteColor;
+    }
 }

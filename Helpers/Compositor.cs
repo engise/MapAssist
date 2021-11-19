@@ -69,7 +69,7 @@ namespace MapAssist.Helpers
 
                 var playerIconRadius = GetIconRadius(Settings.Rendering.Player.IconSize);
 
-                if (Settings.Rendering.Player.CanDrawIcon())
+                if (Rendering.Player.CanDrawIcon())
                 {
                     Bitmap playerIcon = GetIcon(Settings.Rendering.Player);
                     imageGraphics.DrawImage(playerIcon, localPlayerPosition);
@@ -95,6 +95,29 @@ namespace MapAssist.Helpers
                         var poiPosition = poi.Position.OffsetFrom(_areaData.Origin).OffsetFrom(CropOffset);
 
                         imageGraphics.DrawLine(pen, localPlayerCenterPosition, poiPosition);
+                    }
+                }
+                MonsterRendering renderMonster = Utils.GetMonsterRendering();
+                foreach (var unitAny in gameData.Monsters)
+                {
+                    var clr = unitAny.IsElite() ? renderMonster.EliteColor : renderMonster.NormalColor;
+                    var pen = new Pen(clr, 1);
+                    var sz = new Size(5, 5);
+                    var sz2 = new Size(2, 2);
+                    var pos = new Point(unitAny.Path.DynamicX, unitAny.Path.DynamicY);
+                    var midPoint = pos.OffsetFrom(_areaData.Origin).OffsetFrom(CropOffset);
+                    var rect = new Rectangle(midPoint, sz);
+                    imageGraphics.DrawRectangle(pen, rect);
+                    var i = 0;
+                    foreach (var immunity in unitAny.Immunities)
+                    {
+                        var brush = new SolidBrush(ResistColors.ResistColor[immunity]);
+                        //shove the point we're drawing the immunity at to the left to align based on number of immunities
+                        var iPoint = new Point((i * -2) + (1 * (unitAny.Immunities.Count - 1)) - 1, 3);
+                        var pen2 = new Pen(ResistColors.ResistColor[immunity], 1);
+                        var rect2 = new Rectangle(midPoint.OffsetFrom(iPoint), sz2);
+                        imageGraphics.FillRectangle(brush, rect2);
+                        i++;
                     }
                 }
             }
@@ -218,15 +241,34 @@ namespace MapAssist.Helpers
                             g.FillRectangle(new SolidBrush(poiSettings.IconColor), 0, 0, poiSettings.IconSize,
                                 poiSettings.IconSize);
                             break;
-                        case Shape.Cross:
-                            Point[] crossLinePoints = {
-                                new Point(8, 1), new Point(8, 4), new Point(11, 4),
-                                new Point(11, 8), new Point(8, 8), new Point(8, 11),
-                                new Point(4, 11), new Point(4, 8), new Point(1, 8),
-                                new Point(1, 4), new Point(4, 4), new Point(4, 1),
-                                new Point(8, 1)
+                        case Shape.Polygon:
+                            var halfSize = poiSettings.IconSize / 2;
+                            var cutSize = poiSettings.IconSize / 10;
+                            PointF[] curvePoints = {
+                                new PointF(0, halfSize),
+                                new PointF(halfSize - cutSize, halfSize - cutSize),
+                                new PointF(halfSize, 0),
+                                new PointF(halfSize + cutSize, halfSize - cutSize),
+                                new PointF(poiSettings.IconSize, halfSize),
+                                new PointF(halfSize + cutSize, halfSize + cutSize),
+                                new PointF(halfSize, poiSettings.IconSize),
+                                new PointF(halfSize - cutSize, halfSize + cutSize)
                             };
-                            for (var p = 0; p < 12; p++)
+                            g.FillPolygon(new SolidBrush(poiSettings.IconColor), curvePoints);
+                            break;
+                        case Shape.Cross:
+                            var a = poiSettings.IconSize * 0.0833333f;
+                            var b = poiSettings.IconSize * 0.3333333f;
+                            var c = poiSettings.IconSize * 0.6666666f;
+                            var d = poiSettings.IconSize * 0.9166666f;
+                            PointF[] crossLinePoints = {
+                                new PointF(c, a), new PointF(c, b), new PointF(d, b),
+                                new PointF(d, c), new PointF(c, c), new PointF(c, d),
+                                new PointF(b, d), new PointF(b, c), new PointF(a, c),
+                                new PointF(a, b), new PointF(b, b), new PointF(b, a),
+                                new PointF(c, a)
+                            };
+                            for (var p = 0; p < crossLinePoints.Length - 1; p++)
                             {
                                 g.DrawLine(pen, crossLinePoints[p], crossLinePoints[p + 1]);
                             }
